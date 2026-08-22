@@ -1,8 +1,10 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import Annotated, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StringConstraints
+
+TagValue = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=50)]
 
 
 class TaskStatus(str, Enum):
@@ -23,6 +25,8 @@ class Task(BaseModel):
     description: str = ""
     status: TaskStatus = TaskStatus.PENDING
     priority: TaskPriority = TaskPriority.MEDIUM
+    assigned_to: Optional[str] = None
+    tags: list[TagValue] = Field(default_factory=list, max_length=20)
     created_at: datetime
 
 
@@ -31,6 +35,8 @@ class TaskCreate(BaseModel):
     description: str = Field(default="", max_length=2000)
     status: TaskStatus = TaskStatus.PENDING
     priority: TaskPriority = TaskPriority.MEDIUM
+    assigned_to: Optional[str] = Field(default=None, max_length=200)
+    tags: list[TagValue] = Field(default_factory=list, max_length=20)
 
 
 class TaskUpdate(BaseModel):
@@ -38,3 +44,5 @@ class TaskUpdate(BaseModel):
     description: Optional[str] = Field(default=None, max_length=2000)
     status: Optional[TaskStatus] = None
     priority: Optional[TaskPriority] = None
+    assigned_to: Optional[str] = Field(default=None, max_length=200)
+    tags: list[TagValue] = Field(default_factory=list, max_length=20)

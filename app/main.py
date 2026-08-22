@@ -21,9 +21,6 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": exc.errors()},
     )
 
-# Write get_tasks_by_priority() to return a list of tasks filtered by priority. The endpoint should be GET /tasks/priority/{priority} and return a 200 status code with the list of tasks in the response body. If no tasks match the given priority, return an empty list.
-@
-
 @app.get("/health", tags=["health"])
 def health_check() -> dict[str, str]:
     return {"status": "ok"}

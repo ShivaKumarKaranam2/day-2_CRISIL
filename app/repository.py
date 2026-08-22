@@ -27,15 +27,21 @@ class TaskRepository:
                 description=task_data.description,
                 status=task_data.status,
                 priority=task_data.priority,
+                assigned_to=task_data.assigned_to,
+                tags=task_data.tags,
                 created_at=datetime.now(timezone.utc),
             )
             self._tasks[task_id] = task
             return task
 
-    def get_all_tasks(self, status: Optional[TaskStatus] = None) -> list[Task]:
+    def get_all_tasks(
+        self, status: Optional[TaskStatus] = None, assigned_to: Optional[str] = None
+    ) -> list[Task]:
         tasks = list(self._tasks.values())
         if status is not None:
             tasks = [task for task in tasks if task.status == status]
+        if assigned_to is not None:
+            tasks = [task for task in tasks if task.assigned_to == assigned_to]
         return sorted(tasks, key=lambda task: task.id)
 
     def get_task_by_id(self, task_id: int) -> Task:
